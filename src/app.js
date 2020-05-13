@@ -17,7 +17,7 @@ class App {
       this.server.use(
         new RateLimit({
           windowMs: 1 * 60 * 1000,
-          max: 20,
+          max: 40,
         })
       );
     }

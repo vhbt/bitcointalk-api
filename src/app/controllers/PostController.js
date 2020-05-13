@@ -5,9 +5,12 @@ class PostController {
   async index(req, res) {
     const { query } = req;
     const where = {};
+    const page = query.page || 1;
+    const limit = query.limit || 15;
+    const offset = Math.max(limit * (page - 1), 0);
 
-    if (query.from) {
-      where.author = query.from;
+    if (query.author) {
+      where.author = query.author;
     }
 
     if (query.id) {
@@ -30,11 +33,12 @@ class PostController {
       attributes.push('content');
     }
 
-    const posts = await Post.findAll({
-      limit: 15,
+    const posts = await Post.findAndCountAll({
+      limit,
       attributes,
       where,
       order: [['id', 'DESC']],
+      offset,
     });
 
     return res.json(posts);
