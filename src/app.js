@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const RateLimit = require('express-rate-limit');
@@ -11,7 +12,13 @@ class App {
   }
 
   middlewares() {
-    this.server.use(cors());
+    this.server.use(
+      cors(
+        process.env.NODE_ENV !== 'development'
+          ? { origin: process.env.FRONT_APP_URL }
+          : null
+      )
+    );
 
     if (process.env.NODE_ENV !== 'development') {
       this.server.use(

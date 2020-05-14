@@ -8,5 +8,9 @@ module.exports = {
     underscored: true,
     underscoredAll: true,
   },
+  dialectOptions: {
+    useUTC: true,
+  },
+  timezone: '+00:00',
   logging: false,
 };

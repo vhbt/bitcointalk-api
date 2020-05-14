@@ -1,5 +1,9 @@
 const { Op } = require('sequelize');
+const dayjs = require('dayjs');
+const utc = require('dayjs/plugin/utc');
 const { Post } = require('../models/Post');
+
+dayjs.extend(utc);
 
 class PostController {
   async index(req, res) {
@@ -23,6 +27,17 @@ class PostController {
 
     if (query.topic) {
       where.link = { [Op.like]: `%topic=${query.topic}.msg%` };
+    }
+
+    if (query.from || query.to) {
+      where.date = {
+        [Op.between]: [
+          dayjs.utc(query.from).toISOString(),
+          query.to
+            ? dayjs.utc(query.to).toISOString()
+            : dayjs.utc().toISOString(),
+        ],
+      };
     }
 
     const attributes = ['id', 'title', 'date', 'author', 'link'];
