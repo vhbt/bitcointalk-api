@@ -1,11 +1,11 @@
 const { Op } = require('sequelize');
 const dayjs = require('dayjs');
 const utc = require('dayjs/plugin/utc');
-const { Post } = require('../models/Post');
+const { Mention } = require('../models/Mention');
 
 dayjs.extend(utc);
 
-class PostController {
+class Mention {
   async index(req, res) {
     const { query } = req;
     const where = {};
@@ -17,12 +17,12 @@ class PostController {
       where.author = query.author;
     }
 
-    if (query.id && !Number.isNaN(Number(query.id))) {
+    if (query.id) {
       where.id = query.id;
     }
 
     if (query.content) {
-      where.content_full = { [Op.iLike]: `%${query.content}%` };
+      where.content_full = { [Op.like]: `%${query.content}%` };
     }
 
     if (query.topic) {
@@ -61,5 +61,5 @@ class PostController {
 }
 
 module.exports = {
-  PostController: new PostController(),
+  MentionController: new MentionController(),
 };
