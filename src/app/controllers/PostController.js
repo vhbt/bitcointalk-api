@@ -23,6 +23,8 @@ class PostController {
 
     if (query.content) {
       where.content_full = { [Op.iLike]: `%${query.content}%` };
+    } else if (query.exact) {
+      where.content_full = query.exact;
     }
 
     if (query.topic) {
@@ -40,13 +42,14 @@ class PostController {
       };
     }
 
-    const attributes = ['id', 'title', 'date', 'author', 'link'];
-
-    if (parseInt(query.html, 10) === 1) {
-      attributes.push('content_full');
-    } else {
-      attributes.push('content');
-    }
+    const attributes = [
+      'id',
+      'title',
+      'date',
+      'author',
+      'link',
+      'content_full',
+    ];
 
     const posts = await Post.findAndCountAll({
       limit,
