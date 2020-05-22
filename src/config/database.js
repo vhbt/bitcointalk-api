@@ -12,5 +12,5 @@ module.exports = {
     useUTC: true,
   },
   timezone: '+00:00',
-  logging: false,
+  logging: console.log,
 };

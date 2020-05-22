@@ -1,7 +1,7 @@
 require('dotenv').config();
-const { Mention } = require('../models/Mention');
+const { Topic } = require('../models/Topic');
 
-class MentionController {
+class TopicController {
   async index(req, res) {
     const { key } = req.query;
 
@@ -11,12 +11,12 @@ class MentionController {
         value: 'Unauthorized.',
       });
 
-    const mentions = await Mention.findAndCountAll({ order: [['id', 'DESC']] });
+    const topics = await Topic.findAndCountAll({ order: [['id', 'DESC']] });
 
-    return res.json(mentions);
+    return res.json(topics);
   }
 }
 
 module.exports = {
-  MentionController: new MentionController(),
+  TopicController: new TopicController(),
 };

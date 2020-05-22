@@ -8,16 +8,17 @@ dayjs.extend(utc);
 class PostController {
   async index(req, res) {
     const { query } = req;
-    const where = {};
-    const page = query.page || 1;
-    const limit = query.limit || 15;
-    const offset = Math.max(limit * (page - 1), 0);
+    const limit = Math.min(query.limit || 30, 50);
+    const startId = !Number.isNaN(Number(query.startId))
+      ? Number(query.startId)
+      : 1;
+    let where = {};
 
     if (query.author) {
       where.author = query.author;
     }
 
-    if (query.id && !Number.isNaN(Number(query.id))) {
+    if (query.id && !Number.isNaN(Number(query.id)) && query.id < 2147483647) {
       where.id = query.id;
     }
 
@@ -51,15 +52,27 @@ class PostController {
       'content_full',
     ];
 
-    const posts = await Post.findAndCountAll({
-      limit,
+    if (startId !== 0) {
+      where = {
+        ...where,
+        [Op.and]: !query.id ? { id: { [Op.lt]: startId } } : {},
+      };
+    }
+
+    const posts = await Post.findAll({
       attributes,
       where,
       order: [['id', 'DESC']],
-      offset,
+      limit,
     });
 
-    return res.json(posts);
+    let lastPost = posts.length ? posts[posts.length - 1].id : 0;
+
+    if (posts.length < limit) {
+      lastPost = -1;
+    }
+
+    return res.json({ last: lastPost, rows: posts });
   }
 }
 
