@@ -29,7 +29,9 @@ class PostController {
     }
 
     if (query.topic) {
-      where.link = { [Op.like]: `%topic=${query.topic}.msg%` };
+      where.link = {
+        [Op.like]: `https://bitcointalk.org/index.php?topic=${query.topic}.msg%`,
+      };
     }
 
     if (query.from || query.to) {
