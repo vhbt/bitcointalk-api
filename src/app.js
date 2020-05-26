@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const RateLimit = require('express-rate-limit');
+const bodyParser = require('body-parser');
 const { routes } = require('./routes');
 
 class App {
@@ -12,6 +13,7 @@ class App {
   }
 
   middlewares() {
+    this.server.use(bodyParser.json());
     this.server.use(
       cors(
         process.env.NODE_ENV !== 'development'
