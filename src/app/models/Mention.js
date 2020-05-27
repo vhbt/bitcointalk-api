@@ -31,6 +31,10 @@ Mention.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    alt_username: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
     sequelize,
