@@ -11,13 +11,15 @@ class TopicController {
 
     const topicsTracking = await Promise.all(
       topics.rows.map(async (topic) => {
-        const tracking = await Mention.findAll({
-          where: {
-            chat_id: {
-              [Op.in]: topic.tracking,
-            },
-          },
-        });
+        const tracking = topic.tracking.length
+          ? await Mention.findAll({
+              where: {
+                chat_id: {
+                  [Op.in]: topic.tracking,
+                },
+              },
+            })
+          : [];
 
         return {
           author: topic.author,
