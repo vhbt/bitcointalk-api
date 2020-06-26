@@ -5,12 +5,16 @@ class AddressController {
   async index(req, res) {
     const limit = Number(req.query.limit) || 100;
     const page = Number(req.query.page) || 1;
+    const skip = (page - 1) * limit;
 
-    const skip = page * (limit - 1);
+    const { address } = req.query;
 
-    const addresses = await Address.find({ mentions: { $not: { $size: 1 } } })
-      .skip(skip)
-      .limit(limit);
+    const search = {};
+    search.mentions = { $not: { $size: 1 } };
+
+    if (address) search.address = address;
+
+    const addresses = await Address.find(search).skip(skip).limit(limit);
 
     return res.json(addresses);
   }
