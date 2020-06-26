@@ -8,7 +8,9 @@ class AddressController {
 
     const skip = page * (limit - 1);
 
-    const addresses = await Address.find({}).skip(skip).limit(limit);
+    const addresses = await Address.find({ mentions: { $not: { $size: 1 } } })
+      .skip(skip)
+      .limit(limit);
 
     return res.json(addresses);
   }
