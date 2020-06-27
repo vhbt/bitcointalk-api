@@ -13,7 +13,7 @@ const { auth } = require('./app/services/Auth');
 
 routes.get('/posts', PostController.index);
 
-routes.get('/addresses', AddressController.index);
+routes.post('/addresses', AddressController.index);
 
 routes.post('/admin/auth', AuthController.create);
 routes.post('/admin/mentions', auth, MentionController.index);

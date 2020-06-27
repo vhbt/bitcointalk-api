@@ -1,22 +1,29 @@
-// const { Post } = require('../models/Post');
 const { Address } = require('../schemas/Address');
 
 class AddressController {
   async index(req, res) {
-    const limit = Number(req.query.limit) || 100;
-    const page = Number(req.query.page) || 1;
+    const limit = Number(req.body.limit) || 20;
+    const page = Number(req.body.page) || 1;
     const skip = (page - 1) * limit;
 
-    const { address } = req.query;
+    const { address, username, multiples, multiAddresses } = req.body;
 
     const search = {};
-    search.mentions = { $not: { $size: 1 } };
 
+    if (multiples) search.mentions = { $not: { $size: 1 } };
     if (address) search.address = address;
+    if (username) search['mentions.author'] = username;
 
-    const addresses = await Address.find(search).skip(skip).limit(limit);
+    if (multiAddresses) {
+      search.address = { $in: multiAddresses };
+    }
 
-    return res.json(addresses);
+    const addresses = await Address.find(search)
+      .skip(skip)
+      .select({ createdAt: 0, updatedAt: 0, __v: 0, _id: 0, 'mentions._id': 0 })
+      .limit(limit);
+
+    return res.json({ count: addresses.length, rows: addresses });
   }
 }
 
