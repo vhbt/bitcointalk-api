@@ -1,6 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
+const morgan = require('morgan');
 const RateLimit = require('express-rate-limit');
 const bodyParser = require('body-parser');
 const { routes } = require('./routes');
@@ -13,6 +15,8 @@ class App {
   }
 
   middlewares() {
+    this.server.use(helmet());
+    this.server.use(morgan('tiny'));
     this.server.use(bodyParser.json());
     this.server.use(
       cors(
